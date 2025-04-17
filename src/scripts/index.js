@@ -1,3 +1,8 @@
+//Импорты
+import {initialCards} from './cards.js';
+import '../pages/index.css';
+
+// Взаимодействия с карточками
 // Функция создания карточки
 function createCard(cardData, deleteCallback) {
 
