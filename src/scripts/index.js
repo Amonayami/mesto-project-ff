@@ -4,7 +4,7 @@ import '../pages/index.css';
 
 // Взаимодействия с карточками
 // Функция создания карточки
-function createCard(cardData, deleteCallback) {
+function createCard(cardData, deleteCallback, likeCallback) {
   const cardTemplate = document.querySelector('#card-template').content;
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   const cardImage = cardElement.querySelector('.card__image');
@@ -18,7 +18,14 @@ function createCard(cardData, deleteCallback) {
   deleteButton.addEventListener('click', () => {
     deleteCallback(cardElement);
   });
-  
+
+  // Добавляем обработчик лайка
+  const likeButton = cardElement.querySelector('.card__like-button');
+  likeButton.addEventListener('click', () => {
+    likeButton.classList.toggle('card__like-button_is-active');
+    if (likeCallback) likeCallback(cardData);
+  });
+
   return cardElement;
 }
 
@@ -27,12 +34,24 @@ function deleteCard(cardElement) {
   cardElement.remove();
 }
 
+//Функция-заглушка под API-запрос
+function likeCardHandler(cardData) {
+  
+}
+
+//Функция добавления карточки
+function renderCard(cardData, container, prepend = false, likeCallback) {
+  const cardElement = createCard(cardData, deleteCard, likeCallback);
+  if (prepend) {
+    container.prepend(cardElement);
+  } else {
+    container.appendChild(cardElement);
+  }
+}
+
 // Вывести карточки на страницу
 const placesList = document.querySelector('.places__list');
-initialCards.forEach((cardData) => {
-  const cardElement = createCard(cardData, deleteCard);
-  placesList.appendChild(cardElement);
-});
+initialCards.forEach(cardData => renderCard(cardData, placesList, false, likeCardHandler));
 
 
 //Открытие и закрытие модального окна
@@ -115,14 +134,13 @@ document.addEventListener('click', (evt) => {
 // Находим форму редактирования профиля
 const editForm = document.forms['edit-profile'];
 
-// Находим элементы куда вставляють данные
-const nameInput = editForm.elements.name;
-const jobInput = editForm.elements.description;
-
-// Находим элементы откуда вставляють данные
+// Находим элементы откуда вставляють данные профиля
 const profileName = document.querySelector('.profile__title');
 const profileJob = document.querySelector('.profile__description');
 
+// Находим элементы куда вставляють данные профиля
+const nameInput = editForm.elements.name;
+const jobInput = editForm.elements.description;
 
 // Обработчик отправки формы редактирования
 editForm.addEventListener('submit', (evt) => {
@@ -132,4 +150,24 @@ editForm.addEventListener('submit', (evt) => {
   closePopup(editPopup);
 });
 
+//Добавление новой карточки
+// Находим форму карточек
+const newCardForm = document.forms['new-place'];
 
+// Находим элементы куда вставляють данные карточек
+const nameCardInput = newCardForm.elements['place-name'];
+const linkCardInput = newCardForm.elements['link'];
+
+// Обработчик отправки новой карточки
+newCardForm.addEventListener('submit', function(evt) {
+  evt.preventDefault();
+  //Создаем объект новой карточки и добавляем в начало массива
+  const newCard = {
+    name: nameCardInput.value,
+    link: linkCardInput.value
+  };
+  initialCards.unshift(newCard);
+  renderCard(newCard, placesList, true, likeCardHandler);
+  newCardForm.reset();
+  closePopup(newCardPopup);
+});
