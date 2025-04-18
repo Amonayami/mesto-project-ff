@@ -36,7 +36,7 @@ function deleteCard(cardElement) {
 
 //Функция-заглушка под API-запрос
 function likeCardHandler(cardData) {
-  
+
 }
 
 //Функция добавления карточки
@@ -77,18 +77,21 @@ function closeEscape(evt) {
 
 //Открытие попапов
 function openPopup(popup) {
+  //Плавная анимация попапов
+  popup.classList.add('popup_is-animated');
+  popup.offsetHeight;
+  
+  popup.classList.add('popup_is-opened');
   if (popup === editPopup) {
     nameInput.value = profileName.textContent;
     jobInput.value = profileJob.textContent;
   }
-  popup.classList.add('popup_is-opened');
   document.addEventListener('keydown', closeEscape);
 }
 
 //Закрытие попапа
 function closePopup(popup) {
   popup.classList.remove('popup_is-opened');
-  document.removeEventListener('keydown', closeEscape);
 }
 
 //Добавляем обработчики событий
