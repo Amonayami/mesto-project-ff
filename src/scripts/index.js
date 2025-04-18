@@ -1,43 +1,28 @@
 //Импорты
-import {initialCards} from './cards.js';
+import {initialCards, createCard, deleteCard, likeCardHandler} from './cards.js';
+import {openPopup, closePopup} from './modal.js';
+
 import '../pages/index.css';
 
-// Взаимодействия с карточками
-// Функция создания карточки
-function createCard(cardData, deleteCallback, likeCallback) {
-  const cardTemplate = document.querySelector('#card-template').content;
-  const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
-  const cardImage = cardElement.querySelector('.card__image');
-  cardImage.src = cardData.link;
-  cardImage.alt = cardData.name;
-  
-  const cardTitle = cardElement.querySelector('.card__title');
-  cardTitle.textContent = cardData.name;
-  
-  const deleteButton = cardElement.querySelector('.card__delete-button');
-  deleteButton.addEventListener('click', () => {
-    deleteCallback(cardElement);
-  });
-
-  // Добавляем обработчик лайка
-  const likeButton = cardElement.querySelector('.card__like-button');
-  likeButton.addEventListener('click', () => {
-    likeButton.classList.toggle('card__like-button_is-active');
-    if (likeCallback) likeCallback(cardData);
-  });
-
-  return cardElement;
-}
-
-// Функция удаления карточки
-function deleteCard(cardElement) {
-  cardElement.remove();
-}
-
-//Функция-заглушка под API-запрос
-function likeCardHandler(cardData) {
-
-}
+//Выбираем список карточек
+const placesList = document.querySelector('.places__list');
+//Выбиравем попапы
+const editPopup = document.querySelector('.popup_type_edit');
+const newCardPopup = document.querySelector('.popup_type_new-card');
+const imagePopup = document.querySelector('.popup_type_image');
+// Находим форму редактирования профиля
+const editForm = document.forms['edit-profile'];
+// Находим элементы откуда вставляють данные профиля
+const profileName = document.querySelector('.profile__title');
+const profileJob = document.querySelector('.profile__description');
+// Находим элементы куда вставляють данные профиля
+const nameInput = editForm.elements.name;
+const jobInput = editForm.elements.description;
+// Находим форму карточек
+const newCardForm = document.forms['new-place'];
+// Находим элементы куда вставляють данные карточек
+const nameCardInput = newCardForm.elements['place-name'];
+const linkCardInput = newCardForm.elements['link'];
 
 //Функция добавления карточки
 function renderCard(cardData, container, prepend = false, likeCallback) {
@@ -50,49 +35,7 @@ function renderCard(cardData, container, prepend = false, likeCallback) {
 }
 
 // Вывести карточки на страницу
-const placesList = document.querySelector('.places__list');
 initialCards.forEach(cardData => renderCard(cardData, placesList, false, likeCardHandler));
-
-
-//Открытие и закрытие модального окна
-//Выбираем кнопки
-const editButton = document.querySelector('.profile__edit-button');
-const addButton = document.querySelector('.profile__add-button');
-const imageButtons = document.querySelectorAll('.card__image');
-
-//Выбиравем попапы
-const editPopup = document.querySelector('.popup_type_edit');
-const newCardPopup = document.querySelector('.popup_type_new-card');
-const imagePopup = document.querySelector('.popup_type_image');
-
-//Закрытие по esc
-function closeEscape(evt) {
-  if (evt.key === 'Escape') {
-    const openedPopup = document.querySelector('.popup_is-opened');
-    if (openedPopup) {
-      closePopup(openedPopup);
-    }
-  }
-}
-
-//Открытие попапов
-function openPopup(popup) {
-  //Плавная анимация попапов
-  popup.classList.add('popup_is-animated');
-  popup.offsetHeight;
-  
-  popup.classList.add('popup_is-opened');
-  if (popup === editPopup) {
-    nameInput.value = profileName.textContent;
-    jobInput.value = profileJob.textContent;
-  }
-  document.addEventListener('keydown', closeEscape);
-}
-
-//Закрытие попапа
-function closePopup(popup) {
-  popup.classList.remove('popup_is-opened');
-}
 
 //Добавляем обработчики событий
 document.addEventListener('click', (evt) => {
@@ -133,18 +76,6 @@ document.addEventListener('click', (evt) => {
   });
 });
 
-//Редактирование имени и информации о себе
-// Находим форму редактирования профиля
-const editForm = document.forms['edit-profile'];
-
-// Находим элементы откуда вставляють данные профиля
-const profileName = document.querySelector('.profile__title');
-const profileJob = document.querySelector('.profile__description');
-
-// Находим элементы куда вставляють данные профиля
-const nameInput = editForm.elements.name;
-const jobInput = editForm.elements.description;
-
 // Обработчик отправки формы редактирования
 editForm.addEventListener('submit', (evt) => {
   evt.preventDefault(); 
@@ -152,14 +83,6 @@ editForm.addEventListener('submit', (evt) => {
   profileJob.textContent = jobInput.value;
   closePopup(editPopup);
 });
-
-//Добавление новой карточки
-// Находим форму карточек
-const newCardForm = document.forms['new-place'];
-
-// Находим элементы куда вставляють данные карточек
-const nameCardInput = newCardForm.elements['place-name'];
-const linkCardInput = newCardForm.elements['link'];
 
 // Обработчик отправки новой карточки
 newCardForm.addEventListener('submit', function(evt) {
