@@ -5,10 +5,6 @@ export function openPopup(popup) {
     popup.offsetHeight;
   
     popup.classList.add('popup_is-opened');
-    if (popup === editPopup) {
-      nameInput.value = profileName.textContent;
-      jobInput.value = profileJob.textContent;
-    }
     document.addEventListener('keydown', closeEscape);
   }
   

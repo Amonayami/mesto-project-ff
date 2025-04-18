@@ -1,7 +1,6 @@
 //Импорты
 import {initialCards, createCard, deleteCard, likeCardHandler} from './cards.js';
 import {openPopup, closePopup} from './modal.js';
-
 import '../pages/index.css';
 
 //Выбираем список карточек
@@ -41,6 +40,8 @@ initialCards.forEach(cardData => renderCard(cardData, placesList, false, likeCar
 document.addEventListener('click', (evt) => {
   // Открытие попапа редактирования
   if (evt.target.closest('.profile__edit-button')) {
+    nameInput.value = profileName.textContent;
+    jobInput.value = profileJob.textContent;
     openPopup(editPopup);
   }
   
