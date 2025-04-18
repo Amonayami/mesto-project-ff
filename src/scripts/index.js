@@ -46,17 +46,6 @@ const editPopup = document.querySelector('.popup_type_edit');
 const newCardPopup = document.querySelector('.popup_type_new-card');
 const imagePopup = document.querySelector('.popup_type_image');
 
-
-
-
-//Редактирование имени и информации о себе
-// Поля на странице
-const titleName = document.querySelector('.profile__title');
-const descriptionName = document.querySelector('.profile__description');
-//Поля попапа редактирования
-const popupTitleName = document.querySelector('.popup__input_type_name');
-const popupDescriptionName = document.querySelector('.popup__input_type_description');
-
 //Закрытие по esc
 function closeEscape(evt) {
   if (evt.key === 'Escape') {
@@ -70,8 +59,8 @@ function closeEscape(evt) {
 //Открытие попапов
 function openPopup(popup) {
   if (popup === editPopup) {
-    popupTitleName.value = titleName.textContent;
-    popupDescriptionName.value = descriptionName.textContent;
+    nameInput.value = profileName.textContent;
+    jobInput.value = profileJob.textContent;
   }
   popup.classList.add('popup_is-opened');
   document.addEventListener('keydown', closeEscape);
@@ -121,3 +110,26 @@ document.addEventListener('click', (evt) => {
     }
   });
 });
+
+//Редактирование имени и информации о себе
+// Находим форму редактирования профиля
+const editForm = document.forms['edit-profile'];
+
+// Находим элементы куда вставляють данные
+const nameInput = editForm.elements.name;
+const jobInput = editForm.elements.description;
+
+// Находим элементы откуда вставляють данные
+const profileName = document.querySelector('.profile__title');
+const profileJob = document.querySelector('.profile__description');
+
+
+// Обработчик отправки формы редактирования
+editForm.addEventListener('submit', (evt) => {
+  evt.preventDefault(); 
+  profileName.textContent = nameInput.value;
+  profileJob.textContent = jobInput.value;
+  closePopup(editPopup);
+});
+
+
