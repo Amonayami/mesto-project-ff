@@ -21,6 +21,12 @@ const nameCardInput = newCardForm.elements['place-name'];
 const linkCardInput = newCardForm.elements['link'];
 const editButton = document.querySelector('.profile__edit-button');
 const addButton = document.querySelector('.profile__add-button');
+const popups = document.querySelectorAll('.popup');
+
+//Плавная анимация попапов
+popups.forEach(popup => {
+    popup.classList.add('popup_is-animated');
+});
 
 // Обработчик клика по изображению
 function handleCardImageClick(cardData) {
@@ -57,7 +63,6 @@ addButton.addEventListener('click', () => {
 });
 
 // Закртытие попапов по крестику и фону
-const popups = document.querySelectorAll('.popup');
 popups.forEach(popup => {
     const closeButton = popup.querySelector('.popup__close');
     closeButton.addEventListener('click', () => closePopup(popup));

@@ -1,9 +1,5 @@
 //Открытие попапов
 export function openPopup(popup) {
-    //Плавная анимация попапов
-    popup.classList.add('popup_is-animated');
-    popup.offsetHeight;
-  
     popup.classList.add('popup_is-opened');
     document.addEventListener('keydown', closeEscape);
   }
