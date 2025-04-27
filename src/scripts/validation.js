@@ -88,4 +88,4 @@ export const clearValidation = (formElement, config) => {
       input.setCustomValidity('')
     })
     toggleButtonState(inputList, buttonElement, config)
-  };
+};
