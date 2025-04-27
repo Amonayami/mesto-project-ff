@@ -3,6 +3,9 @@ import {initialCards} from './cards.js';
 import {createCard, deleteCard, likeCardHandler} from './card.js';
 import {openPopup, closePopup} from './modal.js';
 import '../pages/index.css';
+import {validationConfig, enableValidation, clearValidation} from './validation.js';
+
+enableValidation(validationConfig);
 
 // Получение DOM-элементов
 const placesList = document.querySelector('.places__list');
@@ -54,11 +57,13 @@ initialCards.forEach(cardData => renderCard(cardData, placesList));
 editButton.addEventListener('click', () => {
     nameInput.value = profileName.textContent;
     jobInput.value = profileJob.textContent;
+    clearValidation(editForm, validationConfig);
     openPopup(editPopup);
 });
 
 // Кнопка добавления
 addButton.addEventListener('click', () => {
+    clearValidation(newCardPopup, validationConfig);
     openPopup(newCardPopup);
 });
 
@@ -95,3 +100,4 @@ newCardForm.addEventListener('submit', (evt) => {
     newCardForm.reset();
     closePopup(newCardPopup);
 });
+

@@ -32,28 +32,79 @@
       © 2021 Mesto Russia
     </p>
   </footer>
+
   <div class="popup popup_type_edit">
     <div class="popup__content">
       <button type="button" class="popup__close"></button>
       <h3 class="popup__title">Редактировать профиль</h3>
-      <form class="popup__form" name="edit-profile">
-        <input type="text" name="name" class="popup__input popup__input_type_name" placeholder="Имя" required>
-        <input type="text" name="description" class="popup__input popup__input_type_description" placeholder="Занятие" required>
+
+
+      <form class="popup__form" name="edit-profile" novalidate>
+        <input
+          id="name__input"
+          type="text"
+          pattern="^[a-zA-Zа-яА-ЯёЁ\- ]+$"
+          data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
+          data-error-value="Вы пропустили это поле."
+          name="name"
+          minlength="2"
+          maxlength="40"
+          class="popup__input popup__input_type_name"
+          placeholder="Имя"
+          required>
+        <span class="name__input-error form__input-error"></span>
+        <input
+          id="description__input"
+          type="text"
+          pattern="^[a-zA-Zа-яА-ЯёЁ\- ]+$"
+          data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
+          data-error-value="Вы пропустили это поле."
+          name="description"
+          minlength="2"
+          maxlength="200"
+          class="popup__input popup__input_type_description"
+          placeholder="Занятие"
+          required>
+        <span class="description__input-error form__input-error"></span>
         <button type="submit" class="button popup__button">Сохранить</button>
       </form>
     </div>
   </div>
+
   <div class="popup popup_type_new-card">
     <div class="popup__content">
       <button type="button" class="popup__close"></button>
       <h3 class="popup__title">Новое место</h3>
-      <form class="popup__form" name="new-place">
-        <input type="text" name="place-name" class="popup__input popup__input_type_card-name" placeholder="Название" required>
-        <input type="url" name="link" class="popup__input popup__input_type_url" placeholder="Ссылка на картинку" required>
+      <form class="popup__form" name="new-place" novalidate>
+        <input
+        id="place__input"
+        type="text"
+        pattern="^[a-zA-Zа-яА-ЯёЁ\- ]+$"
+        data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
+        data-error-value="Вы пропустили это поле."
+        name="place-name"
+        minlength="2"
+        maxlength="30"
+        class="popup__input popup__input_type_card-name"
+        placeholder="Название"
+        required>
+        <span class="place__input-error form__input-error"></span>
+        <input
+        id="url__input"
+        type="url"
+        pattern="https?://.+"
+        data-error-message="Введите адрес сайта."
+        data-error-value="Вы пропустили это поле."
+        name="link"
+        class="popup__input popup__input_type_url"
+        placeholder="Ссылка на картинку"
+        required>
+        <span class="url__input-error form__input-error"></span>
         <button type="submit" class="button popup__button">Сохранить</button>
       </form>
     </div>
   </div>
+
   <div class="popup popup_type_image">
     <div class="popup__content popup__content_content_image">
       <button type="button" class="popup__close"></button>

@@ -14,9 +14,25 @@
   margin-bottom: 0;
 }
 
+.popup__input_type_error {
+  border-bottom: 1px solid rgba(255, 0, 0);
+}
+
+.form__input-error {
+  display: none;
+  color: rgba(255, 0, 0);
+  font-size: 12px;
+}
+
+.popup__error_visible {
+  display: block;
+}
+
 @media screen and (max-width: 568px) {
   .popup__title {
     font-size: 12px;
     line-height: 15px;
   }
 }
+
+
