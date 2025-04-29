@@ -1,8 +1,8 @@
 import '../pages/index.css'
-import {createCard, deleteCards} from './card.js'
+import {createCard, deleteCards, likeCardHandler} from './card.js'
 import {openPopup, closePopup} from './modal.js'
 import {validationConfig, enableValidation, clearValidation} from './validation.js'
-import {getProfile, getCards, updateProfile, addNewCard, deleteCard} from './api.js'
+import {getProfile, getCards, updateProfile, addNewCard} from './api.js'
 
 enableValidation(validationConfig)
 
@@ -106,7 +106,7 @@ function handleCardImageClick(cardData) {
 
 //Добавление новой карточки
 function renderCard(cardData, container, prepend = false, profileId) {
-    const cardElement = createCard(cardData, deleteCards, likeCardHandler, handleCardImageClick, profileId)
+    const cardElement = createCard(cardData, deleteCards, (evt) => likeCardHandler(evt, cardData), handleCardImageClick, profileId)
     if (prepend) {
         container.prepend(cardElement)
     } else {

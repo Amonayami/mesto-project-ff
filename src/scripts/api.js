@@ -102,3 +102,20 @@ export const deleteCard = (cardId) => {
     console.log('Ошибка api удаления карточек:', error)
   })
 }
+
+//Удаление / добавление лайков
+export const toggleCardLike = (cardId, isLiked) => {
+  return fetch(`${config.baseUrl}/cards/${cardId}/likes`, {
+    method: isLiked ? 'DELETE' : 'PUT',
+    headers: config.headers
+  })
+  .then(res => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Ошибка: ${res.status}`);
+  })
+  .catch(error => {
+    console.error('Ошибка при изменении лайка:', error);
+  });
+};
