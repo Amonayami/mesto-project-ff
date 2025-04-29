@@ -1,10 +1,8 @@
-// Импорты
 import '../pages/index.css'
-import {initialCards} from './cards.js'
-import {createCard, deleteCard, likeCardHandler} from './card.js'
+import {createCard, deleteCards} from './card.js'
 import {openPopup, closePopup} from './modal.js'
 import {validationConfig, enableValidation, clearValidation} from './validation.js'
-import {getProfile} from './api.js'
+import {getProfile, getCards, updateProfile, addNewCard, deleteCard} from './api.js'
 
 enableValidation(validationConfig)
 
@@ -24,17 +22,19 @@ const linkCardInput = newCardForm.elements['link']
 const editButton = document.querySelector('.profile__edit-button')
 const addButton = document.querySelector('.profile__add-button')
 const popups = document.querySelectorAll('.popup')
-
 const profileImage = document.querySelector('.profile__image')
 const profileName = document.querySelector('.profile__title')
 const profileJob = document.querySelector('.profile__description')
+let profileId;
 
+//Загрузка профиля
 const loadProfile = () => {
     getProfile()
     .then((profileData) => {
         profileName.textContent = profileData.name
         profileJob.textContent = profileData.about
         profileImage.src = profileData.avatar
+        profileId = profileData._id
         return profileData
     })
     .catch((error) => {
@@ -44,6 +44,52 @@ const loadProfile = () => {
 
 loadProfile()
 
+//Загрузка карточек
+Promise.all([getProfile(), getCards()])
+    .then(([profileData, cards]) => {
+        profileId = profileData._id
+        placesList.innerHTML = ''
+        cards.forEach((cardData) => {
+            renderCard(cardData, placesList, false, profileId)
+        })
+    })
+    .catch((error) => {
+        console.log('Ошибка ui карточек:', error)
+    })
+
+
+// Обновление профиля
+editForm.addEventListener('submit', (evt) => {
+    evt.preventDefault()
+    const originalName = profileName.textContent
+    const originalJob = profileJob.textContent
+    
+    updateProfile(nameInput.value, jobInput.value)
+        .then((updateProfileData) => {
+            profileName.textContent = updateProfileData.name
+            profileJob.textContent = updateProfileData.about
+            closePopup(editPopup)
+        })
+        .catch((error) => {
+            profileName.textContent = originalName
+            profileJob.textContent = originalJob
+            console.log('Ошибка ui обновления профиля:', error)
+        })
+})
+
+//Добавляем новую карточку
+newCardForm.addEventListener('submit', (evt) => {
+    evt.preventDefault()   
+    addNewCard(nameCardInput.value, linkCardInput.value)
+        .then((newCard) => {
+            renderCard(newCard, placesList, false, profileId)
+            newCardForm.reset()
+            closePopup(newCardPopup)
+        })
+        .catch((error) => {
+            console.log('Ошибка ui при добавлении новой карточки:', error)
+        })
+})
 
 //Плавная анимация попапов
 popups.forEach(popup => {
@@ -59,17 +105,14 @@ function handleCardImageClick(cardData) {
 }
 
 //Добавление новой карточки
-function renderCard(cardData, container, prepend = false) {
-    const cardElement = createCard(cardData, deleteCard, likeCardHandler, handleCardImageClick)
+function renderCard(cardData, container, prepend = false, profileId) {
+    const cardElement = createCard(cardData, deleteCards, likeCardHandler, handleCardImageClick, profileId)
     if (prepend) {
         container.prepend(cardElement)
     } else {
         container.appendChild(cardElement)
     }
 }
-
-// Инициализация карточек
-initialCards.forEach(cardData => renderCard(cardData, placesList))
 
 // Навешивание обработчиков событий
 // Кнопка редактирования
@@ -90,33 +133,9 @@ addButton.addEventListener('click', () => {
 popups.forEach(popup => {
     const closeButton = popup.querySelector('.popup__close')
     closeButton.addEventListener('click', () => closePopup(popup))
-    
     popup.addEventListener('mousedown', (evt) => {
         if (evt.target === popup) {
             closePopup(popup)
         }
     })
 })
-
-// Обработчики форм
-// Форма профиля
-editForm.addEventListener('submit', (evt) => {
-    evt.preventDefault()
-    profileName.textContent = nameInput.value
-    profileJob.textContent = jobInput.value
-    closePopup(editPopup)
-})
-
-// Форма новой карточки
-newCardForm.addEventListener('submit', (evt) => {
-    evt.preventDefault()
-    const newCard = {
-        name: nameCardInput.value,
-        link: linkCardInput.value
-    }
-    initialCards.unshift(newCard)
-    renderCard(newCard, placesList, true)
-    newCardForm.reset()
-    closePopup(newCardPopup)
-})
-

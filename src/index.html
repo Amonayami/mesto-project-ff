@@ -37,8 +37,6 @@
     <div class="popup__content">
       <button type="button" class="popup__close"></button>
       <h3 class="popup__title">Редактировать профиль</h3>
-
-
       <form class="popup__form" name="edit-profile" novalidate>
         <input
           id="name__input"
@@ -120,7 +118,10 @@
     <button type="button" class="card__delete-button"></button>
     <div class="card__description">
       <h2 class="card__title"></h2>
-      <button type="button" class="card__like-button"></button>
+      <div class="card__like-container">
+        <button type="button" class="card__like-button"></button>
+        <span class="card__like-count">0</span>
+      </div> 
     </div>
   </li>
 </template>
