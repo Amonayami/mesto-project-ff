@@ -1,5 +1,5 @@
 //Импорт node-fetch
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
 //Конфиг api
 const config = {
@@ -11,7 +11,7 @@ const config = {
   }
 
 //Получаем профиль
-const getProfile = () => {
+export const getProfile = () => {
   return fetch(`${config.baseUrl}/users/me`, {
   headers: config.headers
   })
@@ -26,7 +26,7 @@ const getProfile = () => {
     return data
   })
   .catch((error) => {
-    console.log('Ошибка при запросе профиля:', error)
+    console.log('Ошибка api профиля:', error)
   })
 }
   
@@ -46,8 +46,6 @@ const getCards = () => {
     return data
   })
   .catch((error) => {
-    console.log('Ошибка при запросе карточек:', error)
+    console.log('Ошибка api карточек:', error)
   })
 }
-
-getCards()

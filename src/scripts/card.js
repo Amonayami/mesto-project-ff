@@ -12,7 +12,7 @@ export function createCard(cardData, deleteCallback, likeCallback, imageClickCal
     const deleteButton = cardElement.querySelector('.card__delete-button')
     deleteButton.addEventListener('click', () => {
         deleteCallback(cardElement)
-    });
+});
 
     // Добавляем обработчик клика по лайку
     const likeButton = cardElement.querySelector('.card__like-button')

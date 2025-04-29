@@ -4,6 +4,7 @@ import {initialCards} from './cards.js'
 import {createCard, deleteCard, likeCardHandler} from './card.js'
 import {openPopup, closePopup} from './modal.js'
 import {validationConfig, enableValidation, clearValidation} from './validation.js'
+import {getProfile} from './api.js'
 
 enableValidation(validationConfig)
 
@@ -15,8 +16,6 @@ const imagePopup = document.querySelector('.popup_type_image')
 const popupImage = imagePopup.querySelector('.popup__image')
 const popupCaption = imagePopup.querySelector('.popup__caption')
 const editForm = document.forms['edit-profile']
-const profileName = document.querySelector('.profile__title')
-const profileJob = document.querySelector('.profile__description')
 const nameInput = editForm.elements.name
 const jobInput = editForm.elements.description
 const newCardForm = document.forms['new-place']
@@ -25,6 +24,26 @@ const linkCardInput = newCardForm.elements['link']
 const editButton = document.querySelector('.profile__edit-button')
 const addButton = document.querySelector('.profile__add-button')
 const popups = document.querySelectorAll('.popup')
+
+const profileImage = document.querySelector('.profile__image')
+const profileName = document.querySelector('.profile__title')
+const profileJob = document.querySelector('.profile__description')
+
+const loadProfile = () => {
+    getProfile()
+    .then((profileData) => {
+        profileName.textContent = profileData.name
+        profileJob.textContent = profileData.about
+        profileImage.src = profileData.avatar
+        return profileData
+    })
+    .catch((error) => {
+        console.log('Ошибка ui профиля:', error)
+    })
+}
+
+loadProfile()
+
 
 //Плавная анимация попапов
 popups.forEach(popup => {
