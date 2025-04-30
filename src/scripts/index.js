@@ -2,7 +2,7 @@ import '../pages/index.css'
 import {createCard, deleteCards, likeCardHandler} from './card.js'
 import {openPopup, closePopup} from './modal.js'
 import {validationConfig, enableValidation, clearValidation} from './validation.js'
-import {getProfile, getCards, updateProfile, addNewCard} from './api.js'
+import {getProfile, getCards, updateProfile, addNewCard, updateAvatar} from './api.js'
 
 enableValidation(validationConfig)
 
@@ -25,7 +25,17 @@ const popups = document.querySelectorAll('.popup')
 const profileImage = document.querySelector('.profile__image')
 const profileName = document.querySelector('.profile__title')
 const profileJob = document.querySelector('.profile__description')
-let profileId;
+const avatarImage = document.querySelector('.profile__image')
+const avatarPopup = document.querySelector('.popup_type_edit_avatar')
+const avatarForm = document.forms['edit-avatar']
+const avatarInput = avatarForm.elements.avatar
+let profileId
+
+// Показываем элементы после загрузки данных
+function showProfile() {
+    const elements = document.querySelectorAll('.profile__image, .profile__info, .profile__add-button')
+    elements.forEach(el => el.style.opacity = '1')
+}
 
 //Загрузка профиля
 const loadProfile = () => {
@@ -33,13 +43,11 @@ const loadProfile = () => {
     .then((profileData) => {
         profileName.textContent = profileData.name
         profileJob.textContent = profileData.about
-        profileImage.src = profileData.avatar
+        profileImage.style.backgroundImage = `url('${profileData.avatar}')`
         profileId = profileData._id
-        return profileData
+        showProfile()
     })
-    .catch((error) => {
-        console.log('Ошибка ui профиля:', error)
-    })
+    .catch(console.error)
 }
 
 loadProfile()
@@ -57,14 +65,13 @@ Promise.all([getProfile(), getCards()])
         console.log('Ошибка ui карточек:', error)
     })
 
-
 // Обновление профиля
 editForm.addEventListener('submit', (evt) => {
     evt.preventDefault()
     const originalName = profileName.textContent
     const originalJob = profileJob.textContent
-    
-    updateProfile(nameInput.value, jobInput.value)
+    const submitButton = editForm.querySelector('.popup__button');
+    loadingButton(submitButton, updateProfile(nameInput.value, jobInput.value))
         .then((updateProfileData) => {
             profileName.textContent = updateProfileData.name
             profileJob.textContent = updateProfileData.about
@@ -80,14 +87,30 @@ editForm.addEventListener('submit', (evt) => {
 //Добавляем новую карточку
 newCardForm.addEventListener('submit', (evt) => {
     evt.preventDefault()   
-    addNewCard(nameCardInput.value, linkCardInput.value)
+    const submitButton = newCardForm.querySelector('.popup__button');
+    loadingButton(submitButton, addNewCard(nameCardInput.value, linkCardInput.value))
         .then((newCard) => {
-            renderCard(newCard, placesList, false, profileId)
+            renderCard(newCard, placesList, true, profileId)
             newCardForm.reset()
             closePopup(newCardPopup)
         })
         .catch((error) => {
             console.log('Ошибка ui при добавлении новой карточки:', error)
+        })
+})
+
+// Обновление аватара
+avatarForm.addEventListener('submit', (evt) => {
+    evt.preventDefault()
+    const submitButton = avatarForm.querySelector('.popup__button');
+    loadingButton(submitButton, updateAvatar(avatarInput.value))
+        .then((updateAvatarData) => {
+            profileImage.style.backgroundImage = `url('${updateAvatarData.avatar}')`
+            avatarForm.reset()
+            closePopup(avatarPopup)
+        })
+        .catch((error) => {
+            console.log('Ошибка ui обновления аватара:', error)
         })
 })
 
@@ -114,7 +137,6 @@ function renderCard(cardData, container, prepend = false, profileId) {
     }
 }
 
-// Навешивание обработчиков событий
 // Кнопка редактирования
 editButton.addEventListener('click', () => {
     nameInput.value = profileName.textContent
@@ -125,9 +147,15 @@ editButton.addEventListener('click', () => {
 
 // Кнопка добавления
 addButton.addEventListener('click', () => {
-    clearValidation(newCardPopup, validationConfig)
+    clearValidation(newCardForm, validationConfig)
     openPopup(newCardPopup)
 });
+
+// Клик по аватару
+avatarImage.addEventListener('click', () => {
+    clearValidation(avatarForm, validationConfig)
+    openPopup(avatarPopup)
+})
 
 // Закртытие попапов по крестику и фону
 popups.forEach(popup => {
@@ -139,3 +167,14 @@ popups.forEach(popup => {
         }
     })
 })
+
+//Процесс загрузки
+function loadingButton(submitButton, promise) {
+    const originalText = submitButton.textContent
+    submitButton.textContent = 'Сохранение...'
+    submitButton.disabled = true
+    return promise.finally(() => {
+        submitButton.textContent = originalText
+        submitButton.disabled = false
+    })
+}

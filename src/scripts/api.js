@@ -109,13 +109,31 @@ export const toggleCardLike = (cardId, isLiked) => {
     method: isLiked ? 'DELETE' : 'PUT',
     headers: config.headers
   })
-  .then(res => {
+  .then((res) => {
     if (res.ok) {
-      return res.json();
+      return res.json()
     }
-    return Promise.reject(`Ошибка: ${res.status}`);
+    return Promise.reject(`Ошибка: ${res.status}`)
   })
   .catch(error => {
-    console.error('Ошибка при изменении лайка:', error);
-  });
-};
+    console.error('Ошибка при изменении лайка:', error)
+  })
+}
+
+//Обновление аватара
+export const updateAvatar = (avatarUrl) => {
+  return fetch(`${config.baseUrl}/users/me/avatar`, {
+    method: 'PATCH',
+    headers: config.headers,
+    body: JSON.stringify({avatar: avatarUrl})
+  })
+  .then((res) => {
+    if (res.ok) {
+      return res.json()
+    }
+    return Promise.reject(`Ошибка: ${res.status}`)
+  })
+  .catch((error) => {
+    console.log('Ошибка api обновления аватара:', error)
+  })
+}

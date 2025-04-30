@@ -6,6 +6,13 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Mesto</title>
+  <style>
+    .profile__image, 
+    .profile__info,
+    .profile__add-button {
+      opacity: 0;
+    }
+  </style>
 </head>
 <body class="page">
 <div class="page__content">
@@ -32,7 +39,26 @@
       © 2021 Mesto Russia
     </p>
   </footer>
-
+  <div class="popup popup_type_edit_avatar">
+    <div class="popup__content">
+      <button type="button" class="popup__close"></button>
+      <h3 class="popup__title">Обновить аватар</h3>
+      <form class="popup__form" name="edit-avatar" novalidate>
+        <input
+        id="url__input_avatar"
+        type="url"
+        pattern="https?://.+"
+        data-error-message="Введите адрес сайта."
+        data-error-value="Вы пропустили это поле."
+        name="avatar"
+        class="popup__input popup__input_type_url"
+        placeholder="Ссылка на аватар"
+        required>
+        <span class="url__input_avatar-error form__input-error"></span>
+        <button type="submit" class="button popup__button">Сохранить</button>
+      </form>
+    </div>
+  </div>
   <div class="popup popup_type_edit">
     <div class="popup__content">
       <button type="button" class="popup__close"></button>
@@ -68,7 +94,6 @@
       </form>
     </div>
   </div>
-
   <div class="popup popup_type_new-card">
     <div class="popup__content">
       <button type="button" class="popup__close"></button>
@@ -102,7 +127,6 @@
       </form>
     </div>
   </div>
-
   <div class="popup popup_type_image">
     <div class="popup__content popup__content_content_image">
       <button type="button" class="popup__close"></button>
@@ -111,7 +135,6 @@
     </div>
   </div>
 </div>
-
 <template id="card-template">
   <li class="places__item card">
     <img class="card__image" src="" alt="" />

@@ -22,25 +22,24 @@ export function createCard(cardData, deleteCallback, likeCallback, imageClickCal
     // Настраиваем кнопку удаления
     const deleteButton = cardElement.querySelector('.card__delete-button')
     if (cardData.owner._id !== profileId) {
-        deleteButton.style.display = 'none';
+        deleteButton.style.display = 'none'
     } else {
         deleteButton.addEventListener('click', () => {
-            deleteCallback(cardElement, cardData._id);
-        });
+            deleteCallback(cardElement, cardData._id)
+        })
     }
     
     // Настраиваем кнопку лайка
     const likeButton = cardElement.querySelector('.card__like-button')
     // Проверяем, был ли лайк ранее
-    if (cardData.likes.includes(profileId) || 
-        (localStorage.getItem(cardData._id) === 'liked')) {
-        likeButton.classList.add('card__like-button_is-active')
+    const isLiked = cardData.likes.some(like => like._id === profileId);
+    if (isLiked) {
+        likeButton.classList.add('card__like-button_is-active');
     }
     
-    // Используем переданный likeCallback
     likeButton.addEventListener('click', () => {
-        likeCallback(cardElement, cardData);
-    });
+        likeCallback(cardElement, cardData)
+    })
     
     // Добавляем обработчик клика по изображению
     cardImage.addEventListener('click', () => imageClickCallback(cardData))
@@ -61,26 +60,19 @@ export function deleteCards(cardElement, cardId) {
 
 // Обработчик лайка
 export function likeCardHandler(cardElement, cardData) {
-    const likeButton = cardElement.querySelector('.card__like-button');
-    const isLiked = likeButton.classList.contains('card__like-button_is-active');
-    
+    const likeButton = cardElement.querySelector('.card__like-button')
+    const isLiked = likeButton.classList.contains('card__like-button_is-active')
     toggleCardLike(cardData._id, isLiked)
         .then(updatedCard => {
             // Обновляем состояние лайка
-            likeButton.classList.toggle('card__like-button_is-active');
-            // Сохраняем состояние в localStorage
-            if (likeButton.classList.contains('card__like-button_is-active')) {
-                localStorage.setItem(cardData._id, 'liked');
-            } else {
-                localStorage.removeItem(cardData._id);
-            }
+            likeButton.classList.toggle('card__like-button_is-active')
             // Обновляем количество лайков
-            const likesCountElement = cardElement.querySelector('.card__like-count');
+            const likesCountElement = cardElement.querySelector('.card__like-count')
             if (likesCountElement) {
-                likesCountElement.textContent = updatedCard.likes.length;
+                likesCountElement.textContent = updatedCard.likes.length
             }
         })
         .catch(error => {
-            console.error('Ошибка ui при изменении лайка:', error);
-        });
+            console.error('Ошибка ui при изменении лайка:', error)
+        })
 }
