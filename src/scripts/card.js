@@ -32,9 +32,9 @@ export function createCard(cardData, deleteCallback, likeCallback, imageClickCal
     // Настраиваем кнопку лайка
     const likeButton = cardElement.querySelector('.card__like-button')
     // Проверяем, был ли лайк ранее
-    const isLiked = cardData.likes.some(like => like._id === profileId);
+    const isLiked = cardData.likes.some(like => like._id === profileId)
     if (isLiked) {
-        likeButton.classList.add('card__like-button_is-active');
+        likeButton.classList.add('card__like-button_is-active')
     }
     
     likeButton.addEventListener('click', () => {
