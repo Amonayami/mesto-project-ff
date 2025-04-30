@@ -93,6 +93,7 @@ avatarForm.addEventListener('submit', (evt) => {
     loadingButton(submitButton, updateAvatar(avatarInput.value))
         .then((updateAvatarData) => {
             profileImage.style.backgroundImage = `url('${updateAvatarData.avatar}')`
+            clearValidation(avatarForm, validationConfig)
             avatarForm.reset()
             closePopup(avatarPopup)
         })
@@ -139,7 +140,6 @@ addButton.addEventListener('click', () => {
 
 // Клик по аватару
 avatarImage.addEventListener('click', () => {
-    clearValidation(avatarForm, validationConfig)
     openPopup(avatarPopup)
 })
 
