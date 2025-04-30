@@ -1,10 +1,11 @@
 import {deleteCard, toggleCardLike} from './api.js'
 
+const cardTemplate = document.querySelector('#card-template').content
 // Функция создания карточки
 export function createCard(cardData, deleteCallback, likeCallback, imageClickCallback, profileId) {
+    
     // Получаем шаблон карточки
-    const cardTemplate = document.querySelector('#card-template').content
-    const cardElement = cardTemplate.querySelector('.card').cloneNode(true)
+    const cardElement = getCardTemplate()
     
     // Заполняем данные изображения
     const cardImage = cardElement.querySelector('.card__image')
@@ -46,6 +47,12 @@ export function createCard(cardData, deleteCallback, likeCallback, imageClickCal
     
     return cardElement
 }
+
+// Функция клонирования карточки
+function getCardTemplate() {
+    const cardTemplate = document.querySelector('#card-template').content
+    return cardTemplate.querySelector('.card').cloneNode(true)
+  }
 
 // Функция удаления карточки
 export function deleteCards(cardElement, cardId) {

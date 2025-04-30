@@ -3,6 +3,7 @@ import {createCard, deleteCards, likeCardHandler} from './card.js'
 import {openPopup, closePopup} from './modal.js'
 import {validationConfig, enableValidation, clearValidation} from './validation.js'
 import {getProfile, getCards, updateProfile, addNewCard, updateAvatar} from './api.js'
+import {loadingButton} from './utils.js'
 
 enableValidation(validationConfig)
 
@@ -37,25 +38,14 @@ function showProfile() {
     elements.forEach(el => el.style.opacity = '1')
 }
 
-//Загрузка профиля
-const loadProfile = () => {
-    getProfile()
-    .then((profileData) => {
+//Загрузка карточек
+Promise.all([getProfile(), getCards()])
+    .then(([profileData, cards]) => {
         profileName.textContent = profileData.name
         profileJob.textContent = profileData.about
         profileImage.style.backgroundImage = `url('${profileData.avatar}')`
         profileId = profileData._id
         showProfile()
-    })
-    .catch(console.error)
-}
-
-loadProfile()
-
-//Загрузка карточек
-Promise.all([getProfile(), getCards()])
-    .then(([profileData, cards]) => {
-        profileId = profileData._id
         placesList.innerHTML = ''
         cards.forEach((cardData) => {
             renderCard(cardData, placesList, false, profileId)
@@ -68,8 +58,6 @@ Promise.all([getProfile(), getCards()])
 // Обновление профиля
 editForm.addEventListener('submit', (evt) => {
     evt.preventDefault()
-    const originalName = profileName.textContent
-    const originalJob = profileJob.textContent
     const submitButton = editForm.querySelector('.popup__button');
     loadingButton(submitButton, updateProfile(nameInput.value, jobInput.value))
         .then((updateProfileData) => {
@@ -78,8 +66,6 @@ editForm.addEventListener('submit', (evt) => {
             closePopup(editPopup)
         })
         .catch((error) => {
-            profileName.textContent = originalName
-            profileJob.textContent = originalJob
             console.log('Ошибка ui обновления профиля:', error)
         })
 })
@@ -91,6 +77,7 @@ newCardForm.addEventListener('submit', (evt) => {
     loadingButton(submitButton, addNewCard(nameCardInput.value, linkCardInput.value))
         .then((newCard) => {
             renderCard(newCard, placesList, true, profileId)
+            clearValidation(newCardForm, validationConfig)
             newCardForm.reset()
             closePopup(newCardPopup)
         })
@@ -147,9 +134,8 @@ editButton.addEventListener('click', () => {
 
 // Кнопка добавления
 addButton.addEventListener('click', () => {
-    clearValidation(newCardForm, validationConfig)
     openPopup(newCardPopup)
-});
+})
 
 // Клик по аватару
 avatarImage.addEventListener('click', () => {
@@ -167,14 +153,3 @@ popups.forEach(popup => {
         }
     })
 })
-
-//Процесс загрузки
-function loadingButton(submitButton, promise) {
-    const originalText = submitButton.textContent
-    submitButton.textContent = 'Сохранение...'
-    submitButton.disabled = true
-    return promise.finally(() => {
-        submitButton.textContent = originalText
-        submitButton.disabled = false
-    })
-}

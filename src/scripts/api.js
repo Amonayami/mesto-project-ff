@@ -10,42 +10,26 @@ const config = {
     }
   }
 
+function checkResponse(res) {
+  if (res.ok) {
+    return res.json()
+  }
+  return Promise.reject(`Ошибка: ${res.status}`)
+}
+
+
 //Получаем профиль
 export const getProfile = () => {
   return fetch(`${config.baseUrl}/users/me`, {
   headers: config.headers
-  })
-  .then((res) => {
-    if (res.ok) {
-      return res.json()
-    }
-    return Promise.reject(`Ошибка: ${res.status}`)
-  })
-  .then((data) => {
-    return data
-  })
-  .catch((error) => {
-    console.log('Ошибка api получения профиля:', error)
-  })
+  }).then(checkResponse)
 }
   
 //Получаем карточки
 export const getCards = () => {
   return fetch(`${config.baseUrl}/cards`, {
   headers: config.headers
-  })
-  .then((res) => {
-    if (res.ok) {
-      return res.json()
-    }
-    return Promise.reject(`Ошибка: ${res.status}`)
-  })
-  .then((data) => {
-    return data
-  })
-  .catch((error) => {
-    console.log('Ошибка api получения карточек:', error)
-  })
+  }).then(checkResponse)
 }
 
 //Обновление профиля
@@ -54,16 +38,7 @@ export const updateProfile = (name, about) => {
     method: 'PATCH',
     headers: config.headers,
     body: JSON.stringify({name: name, about: about})
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json()
-      }
-      return Promise.reject(`Ошибка: ${res.status}`)
-    })
-    .catch((error) => {
-      console.log('Ошибка api обновления профиля:', error)
-    })
+  }).then(checkResponse)
   }
 
 //Добавляем новую карточку
@@ -72,16 +47,7 @@ export const addNewCard = (name, link) => {
     method: 'POST',
     headers: config.headers,
     body: JSON.stringify({name: name, link: link})
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json()
-      }
-      return Promise.reject(`Ошибка: ${res.status}`)
-    })
-    .catch((error) => {
-      console.log('Ошибка api обновления карточек:', error)
-    })
+  }).then(checkResponse)
   }
 
 //Удаление карточки
@@ -89,16 +55,7 @@ export const deleteCard = (cardId) => {
   return fetch(`${config.baseUrl}/cards/${cardId}`, {
     method: 'DELETE',
     headers: config.headers,
-  })
-  .then((res) => {
-    if (res.ok) {
-      return res.json()
-    }
-    return Promise.reject(`Ошибка: ${res.status}`)
-  })
-  .catch((error) => {
-    console.log('Ошибка api удаления карточек:', error)
-  })
+  }).then(checkResponse)
 }
 
 //Удаление / добавление лайков
@@ -106,16 +63,7 @@ export const toggleCardLike = (cardId, isLiked) => {
   return fetch(`${config.baseUrl}/cards/${cardId}/likes`, {
     method: isLiked ? 'DELETE' : 'PUT',
     headers: config.headers
-  })
-  .then((res) => {
-    if (res.ok) {
-      return res.json()
-    }
-    return Promise.reject(`Ошибка: ${res.status}`)
-  })
-  .catch(error => {
-    console.error('Ошибка при изменении лайка:', error)
-  })
+  }).then(checkResponse)
 }
 
 //Обновление аватара
@@ -124,14 +72,5 @@ export const updateAvatar = (avatarUrl) => {
     method: 'PATCH',
     headers: config.headers,
     body: JSON.stringify({avatar: avatarUrl})
-  })
-  .then((res) => {
-    if (res.ok) {
-      return res.json()
-    }
-    return Promise.reject(`Ошибка: ${res.status}`)
-  })
-  .catch((error) => {
-    console.log('Ошибка api обновления аватара:', error)
-  })
+  }).then(checkResponse)
 }
