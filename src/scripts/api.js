@@ -22,7 +22,6 @@ export const getProfile = () => {
     return Promise.reject(`Ошибка: ${res.status}`)
   })
   .then((data) => {
-    console.log(data)
     return data
   })
   .catch((error) => {
@@ -42,7 +41,6 @@ export const getCards = () => {
     return Promise.reject(`Ошибка: ${res.status}`)
   })
   .then((data) => {
-    console.log(data)
     return data
   })
   .catch((error) => {
